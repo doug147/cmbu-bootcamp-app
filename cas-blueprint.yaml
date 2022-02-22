@@ -85,6 +85,12 @@ resources:
           - git clone https://github.com/codyde/cmbu-bootcamp-app && mkdir /tmp/api-tier
           - mv cmbu-bootcamp-app/app-tier/* /tmp/api-tier && cd /tmp/api-tier
           - pip3 install -r /tmp/api-tier/requirements.txt
+          - pip3 uninstall flask-socketio
+          - pip3 install flask-socketio==4.3.1
+          - pip3 uninstall python-engineio
+          - pip3 install python-engineio==3.13.2
+          - pip3 uninstall python-socketio
+          - pip3 install python-socketio==4.6.0
           - pip install git+https://github.com/Supervisor/supervisor@master
           - mkdir /app && cp app/* /app
           - cp app.conf /usr/supervisord.conf
