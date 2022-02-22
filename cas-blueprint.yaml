@@ -40,7 +40,7 @@ resources:
           - nginx
           - npm
         runcmd:
-          - git clone https://github.com/codyde/cmbu-bootcamp-app && mkdir /tmp/app-frontend
+          - git clone https://github.com/doug147/cmbu-bootcamp-app && mkdir /tmp/app-frontend
           - mv cmbu-bootcamp-app/frontend-tier/* /tmp/app-frontend && cd /tmp/app-frontend
           - curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
           - apt install nodejs -y
@@ -82,7 +82,7 @@ resources:
           - apt install -y python-pip
           - apt install -y python3-pip
           - ufw allow 80
-          - git clone https://github.com/codyde/cmbu-bootcamp-app && mkdir /tmp/api-tier
+          - git clone https://github.com/doug147/cmbu-bootcamp-app && mkdir /tmp/api-tier
           - mv cmbu-bootcamp-app/app-tier/* /tmp/api-tier && cd /tmp/api-tier
           - pip3 install -r /tmp/api-tier/requirements.txt
           - pip3 uninstall flask-socketio
