@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from gevent import monkey
-monkey.patch_all()
+monkey.patch_all(thread=False)
 import requests
 import json
 from caspyr import Session, Deployment, Project, User, Blueprint, CloudAccount
