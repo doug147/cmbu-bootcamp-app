@@ -22,15 +22,15 @@ class Session(object):
     def __init__(self, auth_token):
         self.token = auth_token
         self.headers = {'Content-Type': 'application/json',
-                        'csp-auth-token': self.token}
-        self.baseurl = 'https://api.mgmt.cloud.vmware.com'
+                        'Authorization': f'Bearer {self.token}'}
+        self.baseurl = 'https://lab-vra.meteialab.com'
 
     @classmethod
     def login(self, refresh_token):
-            baseurl = 'https://console.cloud.vmware.com/csp/gateway/am/api'
-            uri = f'/auth/api-tokens/authorize?refresh_token={refresh_token}'
+            baseurl = 'https://lab-vra.meteialab.com'
+            uri = f'/iaas/api/login'
             headers = {'Content-Type': 'application/json'}
-            payload = {}
+            payload = {"refreshToken":refresh_token}
             logger.debug(f'POST to: {baseurl}{uri} '
                          f'with headers: {headers} '
                          f'and body: {payload}.'
@@ -39,11 +39,12 @@ class Session(object):
             try:
                 r = requests.post(f'{baseurl}{uri}',
                                   headers=headers,
-                                  data=payload)
+                                  json=payload,
+                                  verify=False)
                 logger.debug(f'Response: {r.json()}')
                 r.raise_for_status()
                 logger.info('Authenticated successfully.')
-                auth_token = r.json()['access_token']
+                auth_token = r.json()['token']
                 return self(auth_token)
             except requests.exceptions.HTTPError:
                 logger.error('Failed to authenticate.')
@@ -75,7 +76,8 @@ class Session(object):
                 r = requests.request(request_method,
                                      url=url,
                                      headers=self.headers,
-                                     data=payload)
+                                     data=payload,
+                                     verify=False)
                 logger.debug(f'{request_method} to {url} '
                              f'with headers {self.headers} '
                              f'and body {payload}.'
