@@ -9,7 +9,13 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask_socketio import SocketIO, emit
 from threading import Thread
-
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)s %(levelname)s %(message)s',
+                    filename='api.log',
+                    encoding='utf-8'
+                    )
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -50,8 +56,11 @@ def get_health():
 
 @app.route("/api", methods=["POST"])
 def get_data():
+    logger.debug(f'api endpoint reached')
     req = request.get_json()
+    logger.debug(f'request = {req}')
     token = req['cspapitoken']
+    logger.debug(f'token = {token}')
     s = Session.login(token)
     serialData = {}
     deployments = len(Deployment.list(s))
@@ -62,6 +71,7 @@ def get_data():
     serialData['bps'] = bps
     serialData['projects'] = projects
     serialData['cloudaccounts'] = cloudaccounts
+    logger.debug(f'serialData = {serialData}')
     return jsonify(serialData)
 
 @socketio.on('my event')
