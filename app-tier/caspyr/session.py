@@ -6,7 +6,8 @@ import requests
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s %(name)s %(levelname)s %(message)s',
-                    filename='outlog.log'
+                    filename='outlog.log',
+                    encoding='utf-8'
                     )
 logger = logging.getLogger(__name__)
 logging.getLogger('requests').setLevel(logging.CRITICAL)
