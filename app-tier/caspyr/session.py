@@ -4,13 +4,13 @@ import os
 
 import requests
 
-logging.basicConfig(level=os.getenv('caspyr_log_level'),
-                    format='%(asctime)s %(name)s %(levelname)s %(message)s'
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s %(name)s %(levelname)s %(message)s',
+                    filename='outlog.log'
                     )
 logger = logging.getLogger(__name__)
 logging.getLogger('requests').setLevel(logging.CRITICAL)
 logging.getLogger('urllib3').setLevel(logging.CRITICAL)
-
 
 class Session(object):
     """
