@@ -10,8 +10,8 @@ logging.basicConfig(level=logging.DEBUG,
                     encoding='utf-8'
                     )
 logger = logging.getLogger(__name__)
-logging.getLogger('requests').setLevel(logging.CRITICAL)
-logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+logging.getLogger('requests').setLevel(logging.DEBUG)
+logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
 class Session(object):
     """
