@@ -4,14 +4,13 @@ import os
 
 import requests
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(name)s %(levelname)s %(message)s',
-                    filename='outlog.log',
-                    encoding='utf-8'
+logging.basicConfig(level=os.getenv('caspyr_log_level'),
+                    format='%(asctime)s %(name)s %(levelname)s %(message)s'
                     )
 logger = logging.getLogger(__name__)
-logging.getLogger('requests').setLevel(logging.DEBUG)
-logging.getLogger('urllib3').setLevel(logging.DEBUG)
+logging.getLogger('requests').setLevel(logging.CRITICAL)
+logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+
 
 class Session(object):
     """
@@ -23,15 +22,15 @@ class Session(object):
     def __init__(self, auth_token):
         self.token = auth_token
         self.headers = {'Content-Type': 'application/json',
-                        'Authorization': f'Bearer {self.token}'}
-        self.baseurl = 'https://lab-vra.meteialab.com'
+                        'csp-auth-token': self.token}
+        self.baseurl = 'https://api.mgmt.cloud.vmware.com'
 
     @classmethod
     def login(self, refresh_token):
-            baseurl = 'https://lab-vra.meteialab.com'
-            uri = f'/iaas/api/login'
+            baseurl = 'https://console.cloud.vmware.com/csp/gateway/am/api'
+            uri = f'/auth/api-tokens/authorize?refresh_token={refresh_token}'
             headers = {'Content-Type': 'application/json'}
-            payload = {"refreshToken":refresh_token}
+            payload = {}
             logger.debug(f'POST to: {baseurl}{uri} '
                          f'with headers: {headers} '
                          f'and body: {payload}.'
@@ -40,12 +39,11 @@ class Session(object):
             try:
                 r = requests.post(f'{baseurl}{uri}',
                                   headers=headers,
-                                  json=payload,
-                                  verify=False)
+                                  data=payload)
                 logger.debug(f'Response: {r.json()}')
                 r.raise_for_status()
                 logger.info('Authenticated successfully.')
-                auth_token = r.json()['token']
+                auth_token = r.json()['access_token']
                 return self(auth_token)
             except requests.exceptions.HTTPError:
                 logger.error('Failed to authenticate.')
@@ -77,8 +75,7 @@ class Session(object):
                 r = requests.request(request_method,
                                      url=url,
                                      headers=self.headers,
-                                     data=payload,
-                                     verify=False)
+                                     data=payload)
                 logger.debug(f'{request_method} to {url} '
                              f'with headers {self.headers} '
                              f'and body {payload}.'
